@@ -1,0 +1,31 @@
+{
+  "dart.flutterSdkPath": ".fvm/flutter_sdk",
+  "dart.analysisExcludedFolders": [
+    "build",
+    ".dart_tool",
+    ".pub"
+  ],
+  "search.exclude": {
+    "**/.fvm": true,
+    "**/.dart_tool/**": true,
+    "**/node_modules/**": true,
+    "**/.git/**": true
+  },
+  "files.watcherExclude": {
+    "**/.fvm": true,
+    "**/build/**": true,
+    "**/.dart_tool/**": true,
+    "**/node_modules/**": true,
+    "**/.git/**": true
+  },
+  "dart.removeUnusedImports": true,
+  "editor.formatOnSave": true,
+  "files.maxMemoryForLargeFilesMB": 4096,
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "always"
+  },
+  "dart.lineLength": 120,
+  "editor.rulers": [
+    120
+  ]
+}

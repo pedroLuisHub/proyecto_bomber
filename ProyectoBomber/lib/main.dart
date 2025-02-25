@@ -1,0 +1,35 @@
+import 'package:bomber/home_page.dart';
+import 'package:flutter/material.dart';
+import 'package:window_manager/window_manager.dart';
+
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  await windowManager.ensureInitialized();
+  
+    WindowOptions windowOptions = WindowOptions(
+    size: Size(430, 900), // Tamaño inicial (similar a un celular)
+    minimumSize: Size(360, 640), // Tamaño mínimo
+    maximumSize: Size(700, 1080), // Opcional, para que no se agrande demasiado
+    center: true,
+    titleBarStyle: TitleBarStyle.normal,
+  );
+   windowManager.waitUntilReadyToShow(windowOptions, () async {
+    await windowManager.show();
+    await windowManager.setResizable(true); // Para evitar que el usuario lo cambie
+  });
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'ProyectoBomber',
+      
+      home: HomePage(),
+    );
+  }
+}
