@@ -1,6 +1,9 @@
 package py.edu.com.facitec.service;
 
 
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.stereotype.Service;
 
 import lombok.AllArgsConstructor;
@@ -8,6 +11,7 @@ import py.edu.com.facitec.model.Abastecimiento;
 import py.edu.com.facitec.model.Bombero;
 import py.edu.com.facitec.model.DepositoAgua;
 import py.edu.com.facitec.model.Movil;
+import py.edu.com.facitec.model.RecargaMovil;
 import py.edu.com.facitec.repository.AbastecimientoRepository;
 import py.edu.com.facitec.repository.BomberoRepository;
 import py.edu.com.facitec.repository.DepositoAguaRepository;
@@ -22,50 +26,22 @@ public class AbastecimientoService {
     private final DepositoAguaRepository depositoAguaRepository;
     private final BomberoRepository bomberoRepository;
     private final MovilRepository movilRepository;
+    
+    
+    
+    public List<Abastecimiento> listarAbastecimientos(){
+    	return abastecimientoRepository.findAll();
+    }
 
-//    public List<AbastecimientoDTO> listarAbastecimientos() {
-//        return abastecimientoRepository.findAll().stream()
-//                .map(abastecimiento -> new AbastecimientoDTO(
-//                        abastecimiento.getId_abastecimiento(),
-//                        abastecimiento.getFecha_inicio(),
-//                        abastecimiento.getFecha_finalizacion(),
-//                        abastecimiento.getCant_litros(),
-//                        abastecimiento.getDescripcion(),
-//                        abastecimiento.getCant_viajes(),
-//                        abastecimiento.getDepositoAgua() != null ? abastecimiento.getDepositoAgua().getId_deposito_agua() : null,
-//                        abastecimiento.getMovil() != null ? abastecimiento.getMovil().getId_movil() : null,
-//                        abastecimiento.getBombero() != null ? abastecimiento.getBombero().getId_bombero() : null
-//                ))
-//                .collect(Collectors.toList());
-//    }
-//	
-//	
-//	public Optional<AbastecimientoDTO> buscarPorId(Integer id) {
-//        return abastecimientoRepository.findById(id)
-//                .map(abastecimiento -> new AbastecimientoDTO(
-//                        abastecimiento.getId_abastecimiento(),
-//                        abastecimiento.getFecha_inicio(),
-//                        abastecimiento.getFecha_finalizacion(),
-//                        abastecimiento.getCant_litros(),
-//                        abastecimiento.getDescripcion(),
-//                        abastecimiento.getCant_viajes(),
-//                        abastecimiento.getDepositoAgua() != null ? abastecimiento.getDepositoAgua().getId_deposito_agua() : null,
-//                        abastecimiento.getMovil() != null ? abastecimiento.getMovil().getId_movil() : null,
-//                        abastecimiento.getBombero() != null ? abastecimiento.getBombero().getId_bombero() : null
-//                ));
-//    }
+    
+	public Optional<Abastecimiento> buscarPorId(Integer id) {
+        return abastecimientoRepository.findById(id);
+    }
+    
+    
+    
     // Guardar un abastecimiento
     public Abastecimiento guardarAbastecimiento(Abastecimiento abastecimiento) {
-//        // Verificar que las relaciones no sean null
-//        if (abastecimiento.getDepositoAgua() == null || abastecimiento.getDepositoAgua().getId_deposito_agua() == null) {
-//            throw new IllegalArgumentException("El depósito de agua es obligatorio");
-//        }
-//        if (abastecimiento.getBombero() == null || abastecimiento.getBombero().getId_bombero() == null) {
-//            throw new IllegalArgumentException("El bombero es obligatorio");
-//        }
-//        if (abastecimiento.getMovil() == null || abastecimiento.getMovil().getId_movil() == null) {
-//            throw new IllegalArgumentException("El móvil es obligatorio");
-//        }
 
         // Buscar las entidades relacionadas
         DepositoAgua depositoAgua = depositoAguaRepository.findById(abastecimiento.getDepositoAgua().getId_deposito_agua())

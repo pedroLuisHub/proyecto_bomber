@@ -48,7 +48,7 @@ public class CiudadanoController {
 		return ResponseEntity.ok(ciudadanoService.guardarCiudadano(ciudadano));
 	}
 	
-	@DeleteMapping("/{id_ciudadano}")
+	@DeleteMapping("/eliminar/{id_ciudadano}")
 	public void eliminarCiudadano(@PathVariable Integer id_ciudadano) {
 	    ciudadanoService.eliminarCiudadano(id_ciudadano);
 	}

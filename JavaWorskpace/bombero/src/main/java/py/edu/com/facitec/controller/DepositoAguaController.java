@@ -52,7 +52,7 @@ public class DepositoAguaController {
 	}
 
 	
-	@DeleteMapping("/{id_deposito}")
+	@DeleteMapping("/eliminar/{id_deposito}")
 	public void eliminarDepositoAgua(@PathVariable Integer id_deposito) {
 	    depositoAguaService.eliminarDeposito(id_deposito);
 	}

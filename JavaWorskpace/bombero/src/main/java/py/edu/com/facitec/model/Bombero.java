@@ -2,6 +2,8 @@ package py.edu.com.facitec.model;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -43,9 +45,11 @@ public class Bombero {
 	private String cargo;
 
 	@OneToMany(mappedBy = "bombero")
+	@JsonIgnore
 	private List<RecargaMovil> recargaMovil;
 
 	@OneToMany(mappedBy = "bombero")
+	@JsonIgnore
 	private List<Abastecimiento> abastecimiento;
 
 }

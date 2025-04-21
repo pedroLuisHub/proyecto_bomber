@@ -30,4 +30,10 @@ public class MovilService {
 		return movilRepository.save(movil);
 	}
 	
+	
+	public void eliminarMovil(Integer id) {
+		movilRepository.deleteById(id);
+	}
+	
+	
 }

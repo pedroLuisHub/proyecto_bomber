@@ -47,7 +47,7 @@ public class BomberoController {
 	}
 
 	
-	@DeleteMapping("/{id_bombero}")
+	@DeleteMapping("/eliminar/{id_bombero}")
 	public void eliminarBombero(@PathVariable Long id_bombero) {
 	    bomberoService.eliminarBombero(id_bombero);
 	}
