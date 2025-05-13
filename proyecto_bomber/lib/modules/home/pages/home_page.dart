@@ -10,40 +10,72 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 240, 240, 240),
-          appBar: AppBarPrincipal(text: "Bienvenido",),
-            drawer: Drawer(
+      appBar: AppBarPrincipal(text: "Bienvenido"),
+      drawer: Drawer(
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
             const DrawerHeader(
-              decoration: BoxDecoration(
-                color: Colors.red,
-              ),
+              decoration: BoxDecoration(color: Colors.red),
               child: Text(
                 'Menú',
                 style: TextStyle(color: Colors.white, fontSize: 24),
               ),
             ),
-            ListTile(
+            ExpansionTile(
               leading: Icon(Icons.person),
-              title: Text('Lista de Bomberos'),
-              onTap: () {
-                Modular.to.pushNamed('/bombero/');
-              },
+              title: Text('Bomberos'),
+              children: [
+                ListTile(
+                  title: Text('Registrar Bombero'),
+                  onTap: () {
+                    Modular.to.pushNamed('/bombero/abm_bombero');
+                  },
+                ),
+                ListTile(
+                  title: Text('Lista de Bomberos'),
+                  onTap: () {
+                    Modular.to.pushNamed('/bombero/');
+                  },
+                ),
+              ],
             ),
-            ListTile(
-              leading: Icon(Icons.settings),
-              title: Text('Configuración'),
-              onTap: () {
-                Modular.to.pushNamed('/settings');
-              },
+
+            ExpansionTile(
+              leading: Icon(Icons.fire_truck_sharp),
+              title: Text('Moviles'),
+              children: [
+                ListTile(
+                  title: Text('Registrar Movil'),
+                  onTap: () {
+                    Modular.to.pushNamed('/movil/abm_movil');
+                  },
+                ),
+                ListTile(
+                  title: Text('Lista de Moviles'),
+                  onTap: () {
+                    Modular.to.pushNamed('/movil/');
+                  },
+                ),
+              ],
             ),
-            ListTile(
-              leading: Icon(Icons.exit_to_app),
-              title: Text('Cerrar Sesión'),
-              onTap: () {
-                // Acción para cerrar sesión
-              },
+                        ExpansionTile(
+              leading: Icon(Icons.fire_truck_sharp),
+              title: Text('Ciudadanos'),
+              children: [
+                ListTile(
+                  title: Text('Registrar Ciudadano'),
+                  onTap: () {
+                    Modular.to.pushNamed('/ciudadano/abm_ciudadano');
+                  },
+                ),
+                ListTile(
+                  title: Text('Lista de Ciudadanos'),
+                  onTap: () {
+                    Modular.to.pushNamed('/ciudadano/');
+                  },
+                ),
+              ],
             ),
           ],
         ),
@@ -95,6 +127,7 @@ class HomePage extends StatelessWidget {
                           Modular.to.pushNamed('/bombero/abm_bombero');
                         },
                       ),
+
                       CustomButtomWidget(
                         iconColor: const Color.fromARGB(255, 68, 108, 219),
                         label: 'Buscar Puntos Recarga',
@@ -120,7 +153,9 @@ class HomePage extends StatelessWidget {
                         iconColor: Colors.red,
                         label: 'Móviles Operativos',
                         icon: Icons.fire_truck_sharp,
-                        onPressed: () {},
+                        onPressed: () {
+                          Modular.to.pushNamed('/movil/abm_movil');
+                        },
                       ),
                     ],
                   ),

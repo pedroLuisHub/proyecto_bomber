@@ -1,6 +1,6 @@
 import 'package:bomber/core/components/module/core_module.dart';
 import 'package:bomber/modules/bombero/pages/bombero_abm.dart';
-import 'package:bomber/modules/bombero/pages/bombero_controller.dart';
+import 'package:bomber/modules/bombero/controller/bombero_controller.dart';
 import 'package:bomber/modules/bombero/pages/bombero_lista_page.dart';
 import 'package:bomber/modules/bombero/repositories/bombero_repository.dart';
 import 'package:bomber/modules/bombero/services/bombero_service.dart';

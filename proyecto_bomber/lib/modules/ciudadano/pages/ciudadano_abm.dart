@@ -2,35 +2,39 @@ import 'package:bomber/core/components/ui/loader.dart';
 import 'package:bomber/core/components/ui/snack_bar_manager.dart';
 import 'package:bomber/core/ui/app_bar/app_bar_principal.dart';
 import 'package:bomber/core/widgets/todo_list_field.dart';
-import 'package:bomber/modules/bombero/controller/bombero_controller.dart';
+import 'package:bomber/modules/ciudadano/controller/ciudadano_controller.dart';
+import 'package:bomber/modules/ciudadano/model/ciudadano.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:mobx/mobx.dart';
 import 'package:validatorless/validatorless.dart';
 
-class BomberoAbm extends StatefulWidget {
-  const BomberoAbm({super.key});
+class CiudadanoAbm extends StatefulWidget {
+  const CiudadanoAbm({super.key});
 
   @override
-  State<BomberoAbm> createState() => _BomberoAbmState();
+  State<CiudadanoAbm> createState() => _CiudadanoAmbState();
 }
 
-class _BomberoAbmState extends State<BomberoAbm> with Loader, SnackbarManager {
-  final BomberoController _controller = Modular.get();
+class _CiudadanoAmbState extends State<CiudadanoAbm>
+    with Loader, SnackbarManager {
+  final CiudadanoController _controller = Modular.get();
   late ReactionDisposer _statusReactionDisposer;
+  final _key = GlobalKey<FormState>();
+  final _documentoEC = TextEditingController();
   final _nombreEC = TextEditingController();
   final _apellidoEC = TextEditingController();
   final _telefonoEC = TextEditingController();
   final _emailEC = TextEditingController();
   final _direccionEC = TextEditingController();
-  final _cargoEC = TextEditingController();
-  final _documentoEC = TextEditingController();
-  final _key = GlobalKey<FormState>();
-  late final ReactionDisposer disposer;
+  String? _generoEC;
+  final _profesionEC = TextEditingController();
+  String? _generoSeleccionado;
 
   @override
   void initState() {
-    //_controller.setCurrentRecord(Bombero.novo());
+    //_controller.setCurrentRecord(Ciudadano.novo());
     super.initState();
     _initReaction();
     _cargarDatos();
@@ -41,13 +45,14 @@ class _BomberoAbmState extends State<BomberoAbm> with Loader, SnackbarManager {
 
   @override
   void dispose() {
+    _documentoEC.dispose();
     _nombreEC.dispose();
     _apellidoEC.dispose();
     _telefonoEC.dispose();
     _emailEC.dispose();
     _direccionEC.dispose();
-    _cargoEC.dispose();
-    _documentoEC.dispose();
+    _generoEC = null;
+    _profesionEC.dispose();
     super.dispose();
   }
 
@@ -55,14 +60,13 @@ class _BomberoAbmState extends State<BomberoAbm> with Loader, SnackbarManager {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
-
     return Scaffold(
       appBar: AppBarPrincipal(
         // ignore: unnecessary_null_comparison
         text:
             _controller.currentRecord.id == null
-                ? "Registro de Bombero"
-                : "Editar Bombero",
+                ? "Registro de Ciudadano"
+                : "Editar Ciudadano",
       ),
       body: SingleChildScrollView(
         child: Form(
@@ -86,7 +90,7 @@ class _BomberoAbmState extends State<BomberoAbm> with Loader, SnackbarManager {
                     color: Color.fromARGB(255, 255, 255, 255),
                     shape: BoxShape.circle,
                     image: DecorationImage(
-                      image: AssetImage('assets/images/bombero_registro.png'),
+                      image: AssetImage('assets/images/ciudadano_registro.png'),
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -109,7 +113,7 @@ class _BomberoAbmState extends State<BomberoAbm> with Loader, SnackbarManager {
                         "El campo es requerido",
                       ),
                     ),
-                    SizedBox(height: 15),
+                    SizedBox(height: 10),
                     TodoListField(
                       label: "Nombre",
                       controller: _nombreEC,
@@ -120,7 +124,7 @@ class _BomberoAbmState extends State<BomberoAbm> with Loader, SnackbarManager {
                         "El campo es requerido",
                       ),
                     ),
-                    SizedBox(height: 15),
+                    SizedBox(height: 10),
                     TodoListField(
                       label: "Apellido",
                       controller: _apellidoEC,
@@ -131,7 +135,7 @@ class _BomberoAbmState extends State<BomberoAbm> with Loader, SnackbarManager {
                         "El campo es requerido",
                       ),
                     ),
-                    SizedBox(height: 15),
+                    SizedBox(height: 10),
                     TodoListField(
                       label: "Telefono",
                       controller: _telefonoEC,
@@ -139,7 +143,7 @@ class _BomberoAbmState extends State<BomberoAbm> with Loader, SnackbarManager {
                         _controller.setTelefono(value);
                       },
                     ),
-                    SizedBox(height: 15),
+                    SizedBox(height: 10),
                     TodoListField(
                       label: "Email",
                       controller: _emailEC,
@@ -147,7 +151,7 @@ class _BomberoAbmState extends State<BomberoAbm> with Loader, SnackbarManager {
                         _controller.setEmail(value);
                       },
                     ),
-                    SizedBox(height: 15),
+                    SizedBox(height: 10),
                     TodoListField(
                       label: "Direccion",
                       controller: _direccionEC,
@@ -155,15 +159,46 @@ class _BomberoAbmState extends State<BomberoAbm> with Loader, SnackbarManager {
                         _controller.setDireccion(value);
                       },
                     ),
-                    SizedBox(height: 15),
+                    SizedBox(height: 10),
                     TodoListField(
-                      label: "Cargo",
-                      controller: _cargoEC,
+                      label: "Profesion",
+                      controller: _profesionEC,
                       onChanged: (value) {
-                        _controller.setCargo(value);
+                        _controller.setProfesion(value);
                       },
                     ),
-                    SizedBox(height: 60),
+                    SizedBox(height: 10),
+                    DropdownButtonFormField<String>(
+                      value: _generoSeleccionado,
+                      decoration: InputDecoration(
+                        labelText: 'Genero',
+                        border: OutlineInputBorder(),
+                      ),
+                      items:
+                          ['MASCULINO', 'FEMENINO']
+                              .map(
+                                (genero) => DropdownMenuItem(
+                                  value: genero,
+                                  child: Text(genero),
+                                ),
+                              )
+                              .toList(),
+                      onChanged: (valor) {
+                        setState(() {
+                          _generoSeleccionado = valor;
+                        });
+                        _controller.setGenero(valor ?? '');
+                        print('Genero seleccionado: $valor');
+                      },
+                      validator: (valor) {
+                        if (valor == null || valor.isEmpty) {
+                          return 'Por favor selecciona un genero';
+                        }
+                        return null;
+                      },
+                    ),
+
+                    SizedBox(height: 30),
 
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -173,7 +208,7 @@ class _BomberoAbmState extends State<BomberoAbm> with Loader, SnackbarManager {
                             onPressed: () async {
                               // ScaffoldMessenger.of(context).showSnackBar(
                               //   const SnackBar(
-                              //     content: Text('Datos del bombero registrados!'),
+                              //     content: Text('Datos del ciudadano registrados!'),
                               //   ),
                               // );
                               if (_controller.currentRecord.id == null) {
@@ -207,7 +242,7 @@ class _BomberoAbmState extends State<BomberoAbm> with Loader, SnackbarManager {
                             child: const Text('Guardar'),
                           ),
                         ),
-
+                        SizedBox(width: 20),
                         Flexible(
                           child: ElevatedButton(
                             onPressed: () async {
@@ -225,6 +260,7 @@ class _BomberoAbmState extends State<BomberoAbm> with Loader, SnackbarManager {
                                 horizontal: 30,
                                 vertical: 22,
                               ),
+
                               textStyle: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
@@ -254,20 +290,21 @@ class _BomberoAbmState extends State<BomberoAbm> with Loader, SnackbarManager {
     }
   }
 
-  Future<void> _actualizar(int idBombero) async {
+  Future<void> _actualizar(int idCiudadano) async {
     if (_key.currentState!.validate()) {
-      await _controller.actualizar(idBombero);
+      await _controller.actualizar(idCiudadano);
     }
   }
 
   void _limpiarCampos() {
+    _documentoEC.clear();
     _nombreEC.clear();
     _apellidoEC.clear();
     _telefonoEC.clear();
     _emailEC.clear();
     _direccionEC.clear();
-    _cargoEC.clear();
-    _documentoEC.clear();
+    _generoEC = null;
+    _profesionEC.clear();
     _controller.resetCurrentRecord();
     // mientras
     setState(() {});
@@ -277,27 +314,27 @@ class _BomberoAbmState extends State<BomberoAbm> with Loader, SnackbarManager {
     //Esto hace que primero se construya la pantalla, para despues ejecutar el metodo.
     _statusReactionDisposer = reaction((_) => _controller.status, (status) {
       switch (status) {
-        case BomberoStatusState.initial:
+        case CiudadanoStatusState.initial:
           hideLoader();
           break;
-        case BomberoStatusState.loaded:
+        case CiudadanoStatusState.loaded:
           hideLoader();
           break;
-        case BomberoStatusState.loading:
+        case CiudadanoStatusState.loading:
           showLoader();
           break;
-        case BomberoStatusState.success:
-          bomeroRegistrado();
+        case CiudadanoStatusState.success:
+          ciudadanoRegistrado();
           hideLoader();
           // Modular.to.pop();
           showSuccess(_controller.message);
           _limpiarCampos();
           break;
-        case BomberoStatusState.error:
+        case CiudadanoStatusState.error:
           hideLoader();
           showError(_controller.message);
           break;
-        case BomberoStatusState.insertOrUpdate:
+        case CiudadanoStatusState.insertOrUpdate:
           hideLoader();
           // Modular.to.pushNamed('/home/gasto/new-caixa');
           break;
@@ -306,22 +343,33 @@ class _BomberoAbmState extends State<BomberoAbm> with Loader, SnackbarManager {
     });
   }
 
-  void bomeroRegistrado() {
+  void ciudadanoRegistrado() {
     hideLoader();
     showSuccess(_controller.message);
     _limpiarCampos();
   }
 
   void _cargarDatos() {
-    if (_controller.currentRecord != null) {
-      final bombero = _controller.currentRecord;
-      _nombreEC.text = bombero.nombre ?? '';
-      _apellidoEC.text = bombero.apellido ?? '';
-      _telefonoEC.text = bombero.telefono ?? '';
-      _emailEC.text = bombero.email ?? '';
-      _direccionEC.text = bombero.direccion ?? '';
-      _cargoEC.text = bombero.cargo ?? '';
-      _documentoEC.text = bombero.documento ?? '';
+    final ciudadano = Modular.args.data as Ciudadano?;
+    if (ciudadano != null) {
+      _controller.setCurrentRecord(ciudadano);
+
+      final current = _controller.currentRecord;
+      _nombreEC.text = ciudadano.nombre ?? '';
+      _apellidoEC.text = ciudadano.apellido ?? '';
+      _telefonoEC.text = ciudadano.telefono ?? '';
+      _emailEC.text = ciudadano.email ?? '';
+      _direccionEC.text = ciudadano.direccion ?? '';
+      _generoEC = _validarGenero(current.genero);
+      _profesionEC.text = ciudadano.profesion ?? '';
     }
+  }
+
+  String? _validarGenero(String? genero) {
+    const estadosValidos = ['MASCULINO', 'FEMENINO'];
+    if (genero != null && estadosValidos.contains(genero.toUpperCase())) {
+      return genero.toUpperCase();
+    }
+    return null;
   }
 }

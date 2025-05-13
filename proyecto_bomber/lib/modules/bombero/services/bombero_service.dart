@@ -15,11 +15,14 @@ class BomberoService {
       throw ServiceException(message: e.message ?? 'Error al buscar bomberos');
     }
   }
+
   Future<Bombero> save(Bombero bombero) async {
     try {
       return await _repository.save(bombero);
     } on RepositoryException catch (e) {
-      throw ServiceException(message: e.message ?? 'Error al guardar el bombero');
+      throw ServiceException(
+        message: e.message ?? 'Error al guardar el bombero',
+      );
     }
   }
 
@@ -27,9 +30,19 @@ class BomberoService {
     try {
       return await _repository.actualizar(bombero);
     } on RepositoryException catch (e) {
-      throw ServiceException(message: e.message ?? 'Error al guardar el bombero');
+      throw ServiceException(
+        message: e.message ?? 'Error al guardar el bombero',
+      );
     }
   }
 
+  Future<void> eliminar(int id) async {
+  try {
+    return await _repository.eliminar(id);
+  } on RepositoryException catch (e) {
+    throw ServiceException(message: e.message ?? 'Error al eliminar el bombero');
+  }
+}
 
+  
 }

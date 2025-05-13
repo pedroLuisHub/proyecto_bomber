@@ -83,6 +83,42 @@ mixin _$BomberoController on BomberoControllerBase, Store {
     return _$listaBomberoAsyncAction.run(() => super.listaBombero(condition));
   }
 
+  late final _$BomberoControllerBaseActionController =
+      ActionController(name: 'BomberoControllerBase', context: context);
+
+  @override
+  void resetCurrentRecord() {
+    final _$actionInfo = _$BomberoControllerBaseActionController.startAction(
+        name: 'BomberoControllerBase.resetCurrentRecord');
+    try {
+      return super.resetCurrentRecord();
+    } finally {
+      _$BomberoControllerBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void setCurrentRecord(Bombero bombero) {
+    final _$actionInfo = _$BomberoControllerBaseActionController.startAction(
+        name: 'BomberoControllerBase.setCurrentRecord');
+    try {
+      return super.setCurrentRecord(bombero);
+    } finally {
+      _$BomberoControllerBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void insertarBombero() {
+    final _$actionInfo = _$BomberoControllerBaseActionController.startAction(
+        name: 'BomberoControllerBase.insertarBombero');
+    try {
+      return super.insertarBombero();
+    } finally {
+      _$BomberoControllerBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
   @override
   String toString() {
     return '''

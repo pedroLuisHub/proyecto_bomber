@@ -1,23 +1,23 @@
 import 'package:bomber/core/components/ui/loader.dart';
 import 'package:bomber/core/components/ui/snack_bar_manager.dart';
 import 'package:bomber/core/ui/app_bar/app_bar_principal.dart';
-import 'package:bomber/modules/bombero/model/bombero.dart';
-import 'package:bomber/modules/bombero/controller/bombero_controller.dart';
+import 'package:bomber/modules/movil/model/movil.dart';
+import 'package:bomber/modules/movil/controller/movil_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:mobx/mobx.dart';
 
-class BomberoListaPage extends StatefulWidget {
-  const BomberoListaPage({super.key});
+class MovilListaPage extends StatefulWidget {
+  const MovilListaPage({super.key});
 
   @override
-  State<BomberoListaPage> createState() => _BomberoListaPageState();
+  State<MovilListaPage> createState() => _MovilListaPageState();
 }
 
-class _BomberoListaPageState extends State<BomberoListaPage>
+class _MovilListaPageState extends State<MovilListaPage>
     with Loader, SnackbarManager {
-  final BomberoController _controller = Modular.get();
+  final MovilController _controller = Modular.get();
   late ReactionDisposer _statusReactionDisposer;
 
   @override
@@ -37,22 +37,21 @@ class _BomberoListaPageState extends State<BomberoListaPage>
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // showSuccess('consutando.,...');
-          _controller.insertarBombero();
+          _controller.insertarMovil();
         },
         child: Icon(Icons.add),
       ),
-      appBar: AppBarPrincipal(text: "Lista de Bomberos"),
+      appBar: AppBarPrincipal(text: "Lista de Moviles"),
       body: Observer(
         builder: (_) {
           return ListView.builder(
             itemCount: _controller.lista.length,
             itemBuilder: (context, index) {
-              final bombero = _controller.lista[index];
+              final movil = _controller.lista[index];
               return Card(
                 child: ListTile(
-                  title: Text(bombero.nombre ?? ''),
-                  trailing: Row(
+                  title: Text(movil.descripcion ?? ''),
+                                    trailing: Row(
                     mainAxisSize:
                         MainAxisSize
                             .min, // Importante para que el Row no ocupe todo el ancho
@@ -60,15 +59,15 @@ class _BomberoListaPageState extends State<BomberoListaPage>
                       IconButton(
                         icon: Icon(Icons.edit),
                         onPressed: () {
-                          metodoEditar(bombero);
+                          metodoEditar(movil);
                         },
                       ),
                       IconButton(
                         icon: Icon(Icons.delete),
                         onPressed: () async {
-                          await _controller.removerBombero(
-                            bombero.id!,
-                          ); // Debes definir este método
+                          await _controller.removerMovil(
+                            movil.id!,
+                          ); 
                         },
                       ),
                     ],
@@ -83,61 +82,54 @@ class _BomberoListaPageState extends State<BomberoListaPage>
   }
 
   void _initReaction() {
-    //Esto hace que primero se construya la pantalla, para despues ejecutar el metodo.
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _controller.listaBombero('');
+      _controller.listaMovil('');
     });
     _statusReactionDisposer = reaction((_) => _controller.status, (status) {
       switch (status) {
-        case BomberoStatusState.initial:
+        case MovilStatusState.initial:
           hideLoader();
           break;
-        case BomberoStatusState.loaded:
+        case MovilStatusState.loaded:
           hideLoader();
           break;
-        case BomberoStatusState.delete:
-          hideLoader();
-          showSuccess(_controller.message);
-          break;
-        // case BomberoStatusState.error:
-        //   hideLoader();
-        //   showSuccess(_controller.message);
-        //   break;
-        case BomberoStatusState.loading:
+        case MovilStatusState.loading:
           showLoader();
           break;
-        case BomberoStatusState.success:
+        case MovilStatusState.success:
           hideLoader();
           Modular.to.pop();
           showSuccess(_controller.message);
           break;
-        case BomberoStatusState.actualizado:
-          hideLoader();
-          Modular.to.pop();
-          showSuccess(_controller.message);
-          Future.delayed(const Duration(seconds: 1), () {
-            _controller.listaBombero('');
-          });
+        case MovilStatusState.actualizado:
+          _movilActualizado();
 
           break;
-        case BomberoStatusState.error:
+        case MovilStatusState.error:
           hideLoader();
           showError(_controller.message);
           break;
-        case BomberoStatusState.insertOrUpdate:
+        case MovilStatusState.insertOrUpdate:
           hideLoader();
-          _controller.setCurrentRecord(Bombero.novo());
-          Modular.to.pushNamed('abm_bombero');
+          // Modular.to.pushNamed('/home/gasto/new-caixa');
           break;
         default:
       }
     });
   }
 
-  void metodoEditar(Bombero bombero) {
-    _controller.setCurrentRecord(bombero);
-    Modular.to.pushNamed('abm_bombero');
+  void metodoEditar(Movil movil) {
+    _controller.setCurrentRecord(movil);
+    Modular.to.pushNamed('abm_movil', arguments: movil);
   }
 
-
+  void _movilActualizado() {
+    hideLoader();
+    showSuccess(_controller.message);
+    _controller.resetCurrentRecord();
+    Modular.to.pop();
+    Future.delayed(Duration(milliseconds: 500), () {
+      _controller.listaMovil('');
+    });
+  }
 }

@@ -1,7 +1,6 @@
 import 'package:bomber/core/components/dio/rest_client.dart';
 import 'package:bomber/core/components/exceptions/repository_exception.dart';
 import 'package:bomber/modules/bombero/model/bombero.dart';
-import 'package:dio/dio.dart';
 
 class BomberoRepository {
   final RestClient _restClient;
@@ -32,7 +31,14 @@ class BomberoRepository {
     }
   }
 
-
+  
+  Future<void> eliminar(int id) async {
+  try {
+    await _restClient.delete('/bomberos/eliminar/$id');
+  } on Exception catch (e) {
+    throw RepositoryException.fromException(e);
+  }
+}
 
 
   Future<List<Bombero>> lista() async {
