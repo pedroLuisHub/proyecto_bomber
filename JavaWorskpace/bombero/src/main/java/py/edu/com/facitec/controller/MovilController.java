@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 
 @RestController
-@RequestMapping("/movil")
+@RequestMapping("/moviles")
 @AllArgsConstructor
 public class MovilController {
 

@@ -46,7 +46,7 @@ public class Ciudadano {
 	@Column(length = 45, nullable = false)
 	private String genero;
 	@Column(length = 255)
-	private String profecion;
+	private String profesion;
 	
 	
 	
