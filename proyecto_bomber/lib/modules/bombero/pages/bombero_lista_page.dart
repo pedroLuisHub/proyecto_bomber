@@ -1,3 +1,4 @@
+import 'package:bomber/core/components/fields/search_app_bar_widget.dart';
 import 'package:bomber/core/components/ui/loader.dart';
 import 'package:bomber/core/components/ui/snack_bar_manager.dart';
 import 'package:bomber/core/ui/app_bar/app_bar_principal.dart';
@@ -35,14 +36,12 @@ class _BomberoListaPageState extends State<BomberoListaPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // showSuccess('consutando.,...');
-          _controller.insertarBombero();
+      appBar: SearchAppBarWidget(
+        hintText: "Buscar Bombero",
+        onSearch: (condition) {
+          _controller.listaBombero(condition); //
         },
-        child: Icon(Icons.add),
       ),
-      appBar: AppBarPrincipal(text: "Lista de Bomberos"),
       body: Observer(
         builder: (_) {
           return ListView.builder(
@@ -66,9 +65,10 @@ class _BomberoListaPageState extends State<BomberoListaPage>
                       IconButton(
                         icon: Icon(Icons.delete),
                         onPressed: () async {
-                          await _controller.removerBombero(
-                            bombero.id!,
-                          ); // Debes definir este método
+                          mostrarDialogoConfirmacion(
+                            context,
+                            () => _controller.removerBombero(bombero.id!),
+                          );
                         },
                       ),
                     ],
@@ -99,10 +99,6 @@ class _BomberoListaPageState extends State<BomberoListaPage>
           hideLoader();
           showSuccess(_controller.message);
           break;
-        // case BomberoStatusState.error:
-        //   hideLoader();
-        //   showSuccess(_controller.message);
-        //   break;
         case BomberoStatusState.loading:
           showLoader();
           break;
@@ -112,13 +108,7 @@ class _BomberoListaPageState extends State<BomberoListaPage>
           showSuccess(_controller.message);
           break;
         case BomberoStatusState.actualizado:
-          hideLoader();
-          Modular.to.pop();
-          showSuccess(_controller.message);
-          Future.delayed(const Duration(seconds: 1), () {
-            _controller.listaBombero('');
-          });
-
+          _bomberoActualizado();
           break;
         case BomberoStatusState.error:
           hideLoader();
@@ -126,8 +116,8 @@ class _BomberoListaPageState extends State<BomberoListaPage>
           break;
         case BomberoStatusState.insertOrUpdate:
           hideLoader();
-          _controller.setCurrentRecord(Bombero.novo());
-          Modular.to.pushNamed('abm_bombero');
+          // _controller.setCurrentRecord(Bombero.novo());
+          // Modular.to.pushNamed('abm_bombero');
           break;
         default:
       }
@@ -136,8 +126,53 @@ class _BomberoListaPageState extends State<BomberoListaPage>
 
   void metodoEditar(Bombero bombero) {
     _controller.setCurrentRecord(bombero);
-    Modular.to.pushNamed('abm_bombero');
+    Modular.to.pushNamed('abm_bombero', arguments: bombero);
   }
 
+  Future<void> mostrarDialogoConfirmacion(
+    BuildContext context,
+    VoidCallback onConfirmar,
+  ) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // No se puede cerrar tocando fuera del diálogo
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('¿Estás seguro?'),
+          content: const Text(
+            '¿Deseas eliminar este bombero? Esta acción no se puede deshacer.',
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Cancelar'),
+              onPressed: () {
+                Navigator.of(context).pop(); // Cierra el diálogo
+              },
+            ),
+            ElevatedButton(
+              child: const Text('Eliminar'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+                foregroundColor: Colors.white,
+              ),
+              onPressed: () {
+                Navigator.of(context).pop(); // Cierra el diálogo
+                onConfirmar(); // Ejecuta la acción si se confirma
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 
+  void _bomberoActualizado() {
+    hideLoader();
+    showSuccess(_controller.message);
+    _controller.resetCurrentRecord();
+    Modular.to.pop();
+    Future.delayed(Duration(milliseconds: 500), () {
+      _controller.listaBombero('');
+    });
+  }
 }

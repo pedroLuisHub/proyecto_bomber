@@ -10,11 +10,9 @@ part 'movil.g.dart';
     double? capacidad;
     String? descripcion;
     String? estado;
-
-    //Este campo seria para poner una URL como tutorial.
-    @JsonKey(name: 'tutorial_abastecimiento')
+    @JsonKey(name: 'tutorial_abastecimiento') //Este campo seria para poner una URL como tutorial.
     String? tutorial;
-
+ 
 
     Movil({
       this.id,

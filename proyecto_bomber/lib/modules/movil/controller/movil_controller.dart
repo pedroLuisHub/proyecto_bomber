@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:bomber/core/components/exceptions/service_exception.dart';
 import 'package:bomber/modules/movil/model/movil.dart';
 import 'package:bomber/modules/movil/services/movil_service.dart';
@@ -15,6 +18,9 @@ enum MovilStatusState {
   edit,
   delete,
   actualizado,
+  reportLoading,
+  reportGenerated,
+  reportError,
 }
 
 class MovilController = MovilControllerBase with _$MovilController;
@@ -26,6 +32,12 @@ abstract class MovilControllerBase with Store {
 
   @observable
   String? message;
+
+  @observable
+  String? pdfBase64;
+
+  @observable
+  Uint8List? pdfBytes;
 
   @observable
   ObservableList<Movil> lista = ObservableList<Movil>();
@@ -48,7 +60,7 @@ abstract class MovilControllerBase with Store {
   Future<void> listaMovil(String condition) async {
     _status = MovilStatusState.loading;
     try {
-      final response = await _service.lista();
+      final response = await _service.lista(condition);
       lista = response.asObservable();
       _status = MovilStatusState.loaded;
     } on ServiceException catch (e) {
@@ -61,8 +73,7 @@ abstract class MovilControllerBase with Store {
     currentRecord = movil;
   }
 
-
-    @action
+  @action
   void insertarMovil() {
     _status = MovilStatusState.loading;
     currentRecord = Movil.novo();
@@ -70,6 +81,30 @@ abstract class MovilControllerBase with Store {
     _status = MovilStatusState.insertOrUpdate;
   }
 
+  @action
+  Future<void> reporteMoviles(String desde, String hasta) async {
+    _status = MovilStatusState.loading;
+    Uint8List? resultPDF;
+    try {
+      resultPDF = await _service.reporteMoviles(desde, hasta);
+      _status = MovilStatusState.success;
+      if (resultPDF != null) {
+        pdfBytes = resultPDF;
+        pdfBase64 = base64Encode(resultPDF); // Opcional, si necesitas base64
+        _status = MovilStatusState.reportGenerated;
+      } else {
+        message = 'No se pudo generar el reporte';
+        _status = MovilStatusState.reportError;
+      }
+    } on ServiceException catch (e) {
+      message = e.message;
+      _status = MovilStatusState.error;
+    }
+  }
+
+  void setId(int id) {
+    currentRecord = currentRecord.copyWith(id: id);
+  }
 
   void setCapacidad(double capacidad) {
     currentRecord = currentRecord.copyWith(capacidad: capacidad);
@@ -117,15 +152,16 @@ abstract class MovilControllerBase with Store {
   }
 
   Future<void> removerMovil(int id) async {
-  try {
-    _status = MovilStatusState.loading;
-    await _service.eliminar(id);
-    message = 'Bombero eliminado con éxito';
-    await listaMovil(""); // recargar lista si es necesario
-    _status = MovilStatusState.delete;
-  } on ServiceException catch (e) {
-    message = 'No se puede eliminar el registro porque cuenta con dependencias';
-    _status = MovilStatusState.error;
+    try {
+      _status = MovilStatusState.loading;
+      await _service.eliminar(id);
+      message = 'Movil eliminado con éxito';
+      await listaMovil(""); // recargar lista si es necesario
+      _status = MovilStatusState.delete;
+    } on ServiceException {
+      message =
+          'No se puede eliminar el registro porque cuenta con dependencias';
+      _status = MovilStatusState.error;
+    }
   }
-}
 }

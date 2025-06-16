@@ -1,3 +1,4 @@
+import 'package:bomber/core/components/fields/search_app_bar_widget.dart';
 import 'package:bomber/core/components/ui/loader.dart';
 import 'package:bomber/core/components/ui/snack_bar_manager.dart';
 import 'package:bomber/core/ui/app_bar/app_bar_principal.dart';
@@ -35,13 +36,9 @@ class _MovilListaPageState extends State<MovilListaPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          _controller.insertarMovil();
-        },
-        child: Icon(Icons.add),
-      ),
-      appBar: AppBarPrincipal(text: "Lista de Moviles"),
+      appBar: SearchAppBarWidget(hintText: "Buscar Movil",onSearch: (condition) {
+        _controller.listaMovil(condition);
+      },),
       body: Observer(
         builder: (_) {
           return ListView.builder(
@@ -51,7 +48,8 @@ class _MovilListaPageState extends State<MovilListaPage>
               return Card(
                 child: ListTile(
                   title: Text(movil.descripcion ?? ''),
-                                    trailing: Row(
+                  subtitle: Text(movil.estado ?? ''),
+                  trailing: Row(
                     mainAxisSize:
                         MainAxisSize
                             .min, // Importante para que el Row no ocupe todo el ancho
@@ -65,9 +63,10 @@ class _MovilListaPageState extends State<MovilListaPage>
                       IconButton(
                         icon: Icon(Icons.delete),
                         onPressed: () async {
-                          await _controller.removerMovil(
-                            movil.id!,
-                          ); 
+                          mostrarDialogoConfirmacion(
+                            context,
+                            () => _controller.removerMovil(movil.id!),
+                          );
                         },
                       ),
                     ],
@@ -93,6 +92,10 @@ class _MovilListaPageState extends State<MovilListaPage>
         case MovilStatusState.loaded:
           hideLoader();
           break;
+        case MovilStatusState.delete:
+          hideLoader();
+          showSuccess(_controller.message);
+          break;
         case MovilStatusState.loading:
           showLoader();
           break;
@@ -103,7 +106,6 @@ class _MovilListaPageState extends State<MovilListaPage>
           break;
         case MovilStatusState.actualizado:
           _movilActualizado();
-
           break;
         case MovilStatusState.error:
           hideLoader();
@@ -111,7 +113,6 @@ class _MovilListaPageState extends State<MovilListaPage>
           break;
         case MovilStatusState.insertOrUpdate:
           hideLoader();
-          // Modular.to.pushNamed('/home/gasto/new-caixa');
           break;
         default:
       }
@@ -131,5 +132,42 @@ class _MovilListaPageState extends State<MovilListaPage>
     Future.delayed(Duration(milliseconds: 500), () {
       _controller.listaMovil('');
     });
+  }
+
+  Future<void> mostrarDialogoConfirmacion(
+    BuildContext context,
+    VoidCallback onConfirmar,
+  ) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // No se puede cerrar tocando fuera del diálogo
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('¿Estás seguro?'),
+          content: const Text(
+            '¿Deseas eliminar este movil? Esta acción no se puede deshacer.',
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Cancelar'),
+              onPressed: () {
+                Navigator.of(context).pop(); // Cierra el diálogo
+              },
+            ),
+            ElevatedButton(
+              child: const Text('Eliminar'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+                foregroundColor: Colors.white,
+              ),
+              onPressed: () {
+                Navigator.of(context).pop(); // Cierra el diálogo
+                onConfirmar(); // Ejecuta la acción si se confirma
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 }

@@ -1,6 +1,6 @@
 import 'package:bomber/core/components/api/host_name.dart';
-import 'package:bomber/modules/app_module.dart';
-import 'package:bomber/modules/app_widget.dart';
+import 'package:bomber/modules/app/app_module.dart';
+import 'package:bomber/modules/app/app_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:window_manager/window_manager.dart';

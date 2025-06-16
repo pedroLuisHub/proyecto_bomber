@@ -7,6 +7,7 @@ import 'package:bomber/modules/movil/controller/movil_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:mobx/mobx.dart';
+import 'package:validatorless/validatorless.dart';
 
 class MovilAbm extends StatefulWidget {
   const MovilAbm({super.key});
@@ -52,7 +53,6 @@ class _MovilAbmState extends State<MovilAbm> with Loader, SnackbarManager {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     final movil = Modular.args.data as Movil?;
-
     return Scaffold(
       appBar: AppBarPrincipal(
         text:
@@ -104,6 +104,9 @@ class _MovilAbmState extends State<MovilAbm> with Loader, SnackbarManager {
                             double.tryParse(_capacidadEC.text) ?? 0.0;
                         _controller.setCapacidad(capacidad);
                       },
+                      validator: Validatorless.required(
+                        "El campo es requerido",
+                      ),
                     ),
                     SizedBox(height: 15),
                     TodoListField(
@@ -112,16 +115,11 @@ class _MovilAbmState extends State<MovilAbm> with Loader, SnackbarManager {
                       onChanged: (value) {
                         _controller.setDescripcion(value);
                       },
+                      validator: Validatorless.required(
+                        "El campo es requerido",
+                      ),
                     ),
                     SizedBox(height: 15),
-
-                    // TodoListField(
-                    //   label: "Estado",
-                    //   controller: _estadoEC,
-                    //   onChanged: (value) {
-                    //     _controller.setEstado(value);
-                    //   },
-                    // ),
                     DropdownButtonFormField<String>(
                       value: _estadoSeleccionado,
                       decoration: InputDecoration(
@@ -207,7 +205,7 @@ class _MovilAbmState extends State<MovilAbm> with Loader, SnackbarManager {
     );
   }
 
-  void _save() async {
+  Future<void> _save() async {
     if (_key.currentState!.validate()) {
       print('Guardando estado: $_estadoSeleccionado');
       await _controller.save();
@@ -225,6 +223,10 @@ class _MovilAbmState extends State<MovilAbm> with Loader, SnackbarManager {
     _descripcionEC.clear();
     _estadoSeleccionado = null;
     _tutorialEC.clear();
+
+    _controller.resetCurrentRecord();
+    // mientras
+    setState(() {});
   }
 
   void _initReaction() {

@@ -25,6 +25,38 @@ mixin _$MovilController on MovilControllerBase, Store {
     });
   }
 
+  late final _$pdfBase64Atom =
+      Atom(name: 'MovilControllerBase.pdfBase64', context: context);
+
+  @override
+  String? get pdfBase64 {
+    _$pdfBase64Atom.reportRead();
+    return super.pdfBase64;
+  }
+
+  @override
+  set pdfBase64(String? value) {
+    _$pdfBase64Atom.reportWrite(value, super.pdfBase64, () {
+      super.pdfBase64 = value;
+    });
+  }
+
+  late final _$pdfBytesAtom =
+      Atom(name: 'MovilControllerBase.pdfBytes', context: context);
+
+  @override
+  Uint8List? get pdfBytes {
+    _$pdfBytesAtom.reportRead();
+    return super.pdfBytes;
+  }
+
+  @override
+  set pdfBytes(Uint8List? value) {
+    _$pdfBytesAtom.reportWrite(value, super.pdfBytes, () {
+      super.pdfBytes = value;
+    });
+  }
+
   late final _$listaAtom =
       Atom(name: 'MovilControllerBase.lista', context: context);
 
@@ -83,6 +115,15 @@ mixin _$MovilController on MovilControllerBase, Store {
     return _$listaMovilAsyncAction.run(() => super.listaMovil(condition));
   }
 
+  late final _$reporteMovilesAsyncAction =
+      AsyncAction('MovilControllerBase.reporteMoviles', context: context);
+
+  @override
+  Future<void> reporteMoviles(String desde, String hasta) {
+    return _$reporteMovilesAsyncAction
+        .run(() => super.reporteMoviles(desde, hasta));
+  }
+
   late final _$MovilControllerBaseActionController =
       ActionController(name: 'MovilControllerBase', context: context);
 
@@ -112,6 +153,8 @@ mixin _$MovilController on MovilControllerBase, Store {
   String toString() {
     return '''
 message: ${message},
+pdfBase64: ${pdfBase64},
+pdfBytes: ${pdfBytes},
 lista: ${lista},
 currentRecord: ${currentRecord}
     ''';

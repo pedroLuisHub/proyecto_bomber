@@ -41,6 +41,38 @@ mixin _$BomberoController on BomberoControllerBase, Store {
     });
   }
 
+  late final _$pdfBase64Atom =
+      Atom(name: 'BomberoControllerBase.pdfBase64', context: context);
+
+  @override
+  String? get pdfBase64 {
+    _$pdfBase64Atom.reportRead();
+    return super.pdfBase64;
+  }
+
+  @override
+  set pdfBase64(String? value) {
+    _$pdfBase64Atom.reportWrite(value, super.pdfBase64, () {
+      super.pdfBase64 = value;
+    });
+  }
+
+  late final _$pdfBytesAtom =
+      Atom(name: 'BomberoControllerBase.pdfBytes', context: context);
+
+  @override
+  Uint8List? get pdfBytes {
+    _$pdfBytesAtom.reportRead();
+    return super.pdfBytes;
+  }
+
+  @override
+  set pdfBytes(Uint8List? value) {
+    _$pdfBytesAtom.reportWrite(value, super.pdfBytes, () {
+      super.pdfBytes = value;
+    });
+  }
+
   late final _$currentRecordAtom =
       Atom(name: 'BomberoControllerBase.currentRecord', context: context);
 
@@ -81,6 +113,15 @@ mixin _$BomberoController on BomberoControllerBase, Store {
   @override
   Future<void> listaBombero(String condition) {
     return _$listaBomberoAsyncAction.run(() => super.listaBombero(condition));
+  }
+
+  late final _$reporteBomberosAsyncAction =
+      AsyncAction('BomberoControllerBase.reporteBomberos', context: context);
+
+  @override
+  Future<void> reporteBomberos(String desde, String hasta) {
+    return _$reporteBomberosAsyncAction
+        .run(() => super.reporteBomberos(desde, hasta));
   }
 
   late final _$BomberoControllerBaseActionController =
@@ -124,6 +165,8 @@ mixin _$BomberoController on BomberoControllerBase, Store {
     return '''
 message: ${message},
 lista: ${lista},
+pdfBase64: ${pdfBase64},
+pdfBytes: ${pdfBytes},
 currentRecord: ${currentRecord}
     ''';
   }

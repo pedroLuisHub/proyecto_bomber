@@ -69,13 +69,23 @@ class Ciudadano {
   );
   
 
+   @override
+bool operator ==(Object other) =>
+    identical(this, other) ||
+    other is Ciudadano &&
+        runtimeType == other.runtimeType &&
+        id != null &&
+        id == other.id;
+
+@override
+int get hashCode => id?.hashCode ?? 0;
+
 @override
   String toString() {
     return 'Ciudadano(id: $id, documento: $documento, nombre: $nombre, apellido: $apellido, telefono: $telefono, email: $email, direccion: $direccion, genero: $genero, profesion: $profesion)';
   }
 
-  //   factory Ciudadano.fromJson(Map<String, dynamic> json) =>
-  //     _$CiudadanoFromJson(json);
-  // Map<String, dynamic> toJson() => _$CiudadanoToJson(this);
+
+  
 
 }

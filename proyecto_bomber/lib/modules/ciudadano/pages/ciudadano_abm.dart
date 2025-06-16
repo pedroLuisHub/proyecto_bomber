@@ -4,7 +4,6 @@ import 'package:bomber/core/ui/app_bar/app_bar_principal.dart';
 import 'package:bomber/core/widgets/todo_list_field.dart';
 import 'package:bomber/modules/ciudadano/controller/ciudadano_controller.dart';
 import 'package:bomber/modules/ciudadano/model/ciudadano.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:mobx/mobx.dart';
@@ -28,7 +27,7 @@ class _CiudadanoAmbState extends State<CiudadanoAbm>
   final _telefonoEC = TextEditingController();
   final _emailEC = TextEditingController();
   final _direccionEC = TextEditingController();
-  String? _generoEC;
+
   final _profesionEC = TextEditingController();
   String? _generoSeleccionado;
 
@@ -51,7 +50,7 @@ class _CiudadanoAmbState extends State<CiudadanoAbm>
     _telefonoEC.dispose();
     _emailEC.dispose();
     _direccionEC.dispose();
-    _generoEC = null;
+    _generoSeleccionado = null;
     _profesionEC.dispose();
     super.dispose();
   }
@@ -90,8 +89,9 @@ class _CiudadanoAmbState extends State<CiudadanoAbm>
                     color: Color.fromARGB(255, 255, 255, 255),
                     shape: BoxShape.circle,
                     image: DecorationImage(
-                      image: AssetImage('assets/images/ciudadano_registro.png'),
-                      fit: BoxFit.cover,
+                      image: AssetImage('assets/images/ciudadano.png'),
+                      scale: 5,
+                      fit: BoxFit.fitWidth,
                     ),
                   ),
                 ),
@@ -142,6 +142,9 @@ class _CiudadanoAmbState extends State<CiudadanoAbm>
                       onChanged: (value) {
                         _controller.setTelefono(value);
                       },
+                      validator: Validatorless.required(
+                        "El campo es requerido",
+                      ),
                     ),
                     SizedBox(height: 10),
                     TodoListField(
@@ -284,8 +287,9 @@ class _CiudadanoAmbState extends State<CiudadanoAbm>
     );
   }
 
-  Future<void> _save() async {
+  Future <void> _save() async {
     if (_key.currentState!.validate()) {
+      print('Guardando genero: $_generoSeleccionado');
       await _controller.save();
     }
   }
@@ -293,6 +297,7 @@ class _CiudadanoAmbState extends State<CiudadanoAbm>
   Future<void> _actualizar(int idCiudadano) async {
     if (_key.currentState!.validate()) {
       await _controller.actualizar(idCiudadano);
+      Navigator.pop(context);
     }
   }
 
@@ -303,7 +308,7 @@ class _CiudadanoAmbState extends State<CiudadanoAbm>
     _telefonoEC.clear();
     _emailEC.clear();
     _direccionEC.clear();
-    _generoEC = null;
+    _generoSeleccionado = null;
     _profesionEC.clear();
     _controller.resetCurrentRecord();
     // mientras
@@ -349,18 +354,27 @@ class _CiudadanoAmbState extends State<CiudadanoAbm>
     _limpiarCampos();
   }
 
+      void ciudadanoActualizado() {
+    hideLoader();
+    showSuccess(_controller.message);
+    _controller.resetCurrentRecord();
+    _limpiarCampos();
+    // Modular.to.pop();
+  }
+
   void _cargarDatos() {
     final ciudadano = Modular.args.data as Ciudadano?;
     if (ciudadano != null) {
       _controller.setCurrentRecord(ciudadano);
 
       final current = _controller.currentRecord;
+      _documentoEC.text = ciudadano.documento ?? '';
       _nombreEC.text = ciudadano.nombre ?? '';
       _apellidoEC.text = ciudadano.apellido ?? '';
       _telefonoEC.text = ciudadano.telefono ?? '';
       _emailEC.text = ciudadano.email ?? '';
       _direccionEC.text = ciudadano.direccion ?? '';
-      _generoEC = _validarGenero(current.genero);
+      _generoSeleccionado = _validarGenero(current.genero);
       _profesionEC.text = ciudadano.profesion ?? '';
     }
   }

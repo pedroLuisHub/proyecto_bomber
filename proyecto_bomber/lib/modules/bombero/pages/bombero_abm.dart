@@ -257,6 +257,7 @@ class _BomberoAbmState extends State<BomberoAbm> with Loader, SnackbarManager {
   Future<void> _actualizar(int idBombero) async {
     if (_key.currentState!.validate()) {
       await _controller.actualizar(idBombero);
+      Navigator.pop(context);
     }
   }
 
@@ -289,7 +290,6 @@ class _BomberoAbmState extends State<BomberoAbm> with Loader, SnackbarManager {
         case BomberoStatusState.success:
           bomeroRegistrado();
           hideLoader();
-          // Modular.to.pop();
           showSuccess(_controller.message);
           _limpiarCampos();
           break;
@@ -299,7 +299,6 @@ class _BomberoAbmState extends State<BomberoAbm> with Loader, SnackbarManager {
           break;
         case BomberoStatusState.insertOrUpdate:
           hideLoader();
-          // Modular.to.pushNamed('/home/gasto/new-caixa');
           break;
         default:
       }
@@ -309,11 +308,19 @@ class _BomberoAbmState extends State<BomberoAbm> with Loader, SnackbarManager {
   void bomeroRegistrado() {
     hideLoader();
     showSuccess(_controller.message);
+    _controller.resetCurrentRecord();
     _limpiarCampos();
   }
 
+    void bomberoActualizado() {
+    hideLoader();
+    showSuccess(_controller.message);
+    _controller.resetCurrentRecord();
+    _limpiarCampos();
+  }
   void _cargarDatos() {
     if (_controller.currentRecord != null) {
+      
       final bombero = _controller.currentRecord;
       _nombreEC.text = bombero.nombre ?? '';
       _apellidoEC.text = bombero.apellido ?? '';

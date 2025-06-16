@@ -1,6 +1,8 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:bomber/core/components/exceptions/service_exception.dart';
 import 'package:bomber/modules/bombero/model/bombero.dart';
-import 'package:bomber/modules/bombero/repositories/bombero_repository.dart';
 import 'package:bomber/modules/bombero/services/bombero_service.dart';
 import 'package:mobx/mobx.dart';
 
@@ -16,8 +18,10 @@ enum BomberoStatusState {
   edit,
   delete,
   actualizado,
+  reportLoading,
+  reportGenerated,
+  reportError,
 }
-
 
 class BomberoController = BomberoControllerBase with _$BomberoController;
 
@@ -31,6 +35,12 @@ abstract class BomberoControllerBase with Store {
 
   @observable
   ObservableList<Bombero> lista = ObservableList<Bombero>();
+
+  @observable
+  String? pdfBase64;
+
+  @observable
+  Uint8List? pdfBytes;
 
   @observable
   Bombero currentRecord = Bombero.novo();
@@ -50,7 +60,7 @@ abstract class BomberoControllerBase with Store {
   Future<void> listaBombero(String condition) async {
     _status = BomberoStatusState.loading;
     try {
-      final response = await _service.lista();
+      final response = await _service.lista(condition);
       lista = response.asObservable();
       _status = BomberoStatusState.loaded;
       _status = BomberoStatusState.success;
@@ -73,6 +83,27 @@ abstract class BomberoControllerBase with Store {
     currentRecord = Bombero.novo();
     Future.delayed(const Duration(seconds: 0));
     _status = BomberoStatusState.insertOrUpdate;
+  }
+
+  @action
+  Future<void> reporteBomberos(String desde, String hasta) async {
+    _status = BomberoStatusState.loading;
+    Uint8List? resultPDF;
+    try {
+      resultPDF = await _service.reporteBomberos(desde, hasta);
+      _status = BomberoStatusState.success;
+      if (resultPDF != null) {
+        pdfBytes = resultPDF;
+        pdfBase64 = base64Encode(resultPDF); // Opcional, si necesitas base64
+        _status = BomberoStatusState.reportGenerated;
+      } else {
+        message = 'No se pudo generar el reporte';
+        _status = BomberoStatusState.reportError;
+      }
+    } on ServiceException catch (e) {
+      message = e.message;
+      _status = BomberoStatusState.error;
+    }
   }
 
   void setId(int id) {
@@ -125,7 +156,7 @@ abstract class BomberoControllerBase with Store {
       _status = BomberoStatusState.loading;
       final bomberoActualizado = currentRecord.copyWith(id: idBombero);
       await _service.actualizar(bomberoActualizado);
-      message = "Bombero guardado con exito";
+      message = "Bombero actualizado con exito";
       _status = BomberoStatusState.actualizado;
     } on ServiceException catch (e) {
       // throw ServiceException(message: e.message ?? 'Error al guardar el bombero');
@@ -134,18 +165,17 @@ abstract class BomberoControllerBase with Store {
     }
   }
 
-
-Future<void> removerBombero(int id) async {
-  try {
-    _status = BomberoStatusState.loading;
-    await _service.eliminar(id);
-    message = 'Bombero eliminado con éxito';
-    await listaBombero(""); // recargar lista si es necesario
-    _status = BomberoStatusState.delete;
-  } on ServiceException catch (e) {
-    message = 'No se puede eliminar el registro porque cuenta con dependencias';
-    _status = BomberoStatusState.error;
+  Future<void> removerBombero(int id) async {
+    try {
+      _status = BomberoStatusState.loading;
+      await _service.eliminar(id);
+      message = 'Bombero eliminado con éxito';
+      await listaBombero(""); // recargar lista si es necesario
+      _status = BomberoStatusState.delete;
+    } on ServiceException catch (e) {
+      message =
+          'No se puede eliminar el registro porque cuenta con dependencias';
+      _status = BomberoStatusState.error;
+    }
   }
-}
-
 }

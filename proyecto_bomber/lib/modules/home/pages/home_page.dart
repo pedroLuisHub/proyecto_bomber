@@ -16,10 +16,15 @@ class HomePage extends StatelessWidget {
           padding: EdgeInsets.zero,
           children: [
             const DrawerHeader(
-              decoration: BoxDecoration(color: Colors.red),
+              decoration: BoxDecoration(
+                color: Color.fromARGB(255, 226, 14, 14),
+              ),
               child: Text(
                 'Menú',
-                style: TextStyle(color: Colors.white, fontSize: 24),
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
               ),
             ),
             ExpansionTile(
@@ -36,6 +41,12 @@ class HomePage extends StatelessWidget {
                   title: Text('Lista de Bomberos'),
                   onTap: () {
                     Modular.to.pushNamed('/bombero/');
+                  },
+                ),
+                ListTile(
+                  title: Text('Reporte de Bomberos'),
+                  onTap: () {
+                    Modular.to.pushNamed('/bombero/reporte_bombero');
                   },
                 ),
               ],
@@ -57,9 +68,15 @@ class HomePage extends StatelessWidget {
                     Modular.to.pushNamed('/movil/');
                   },
                 ),
+                ListTile(
+                  title: Text('Reporte de Moviles'),
+                  onTap: () {
+                    Modular.to.pushNamed('/movil/reporte_movil');
+                  },
+                ),
               ],
             ),
-                        ExpansionTile(
+            ExpansionTile(
               leading: Icon(Icons.fire_truck_sharp),
               title: Text('Ciudadanos'),
               children: [
@@ -75,22 +92,90 @@ class HomePage extends StatelessWidget {
                     Modular.to.pushNamed('/ciudadano/');
                   },
                 ),
+                ListTile(
+                  title: Text('Reporte de Ciudadanos'),
+                  onTap: () {
+                    Modular.to.pushNamed('/ciudadano/reporte_ciudadano');
+                  },
+                ),
+              ],
+            ),
+            ExpansionTile(
+              leading: Icon(Icons.local_drink),
+              title: Text('Depositos'),
+              children: [
+                ListTile(
+                  title: Text('Registrar Deposito'),
+                  onTap: () {
+                    Modular.to.pushNamed('/deposito/abm_deposito');
+                  },
+                ),
+                ListTile(
+                  title: Text('Lista de Depositos'),
+                  onTap: () {
+                    Modular.to.pushNamed('/deposito/');
+                  },
+                ),
+                ListTile(
+                  title: Text('Reporte de Depositos'),
+                  onTap: () {
+                    Modular.to.pushNamed('/deposito/reporte_deposito');
+                  },
+                ),
+              ],
+            ),
+            ExpansionTile(
+              leading: Icon(Icons.format_color_fill),
+              title: Text('Recargas'),
+              children: [
+                ListTile(
+                  title: Text('Registrar Recargas'),
+                  onTap: () {
+                    Modular.to.pushNamed('/recarga/abm_recarga');
+                  },
+                ),
+                ListTile(
+                  title: Text('Lista de Recargas'),
+                  onTap: () {
+                    Modular.to.pushNamed('/recarga/');
+                  },
+                ),
+                ListTile(
+                  title: Text('Reporte de Recargas'),
+                  onTap: () {
+                    Modular.to.pushNamed('/recarga/reporte_recarga');
+                  },
+                ),
+              ],
+            ),
+            ExpansionTile(
+              leading: Icon(Icons.local_gas_station),
+              title: Text('Abastecimientos'),
+              children: [
+                ListTile(
+                  title: Text('Registrar Abastecimientos'),
+                  onTap: () {
+                    Modular.to.pushNamed('/abastecimiento/abm_abastecimiento');
+                  },
+                ),
+                ListTile(
+                  title: Text('Lista de Abastecimientos'),
+                  onTap: () {
+                    Modular.to.pushNamed('/abastecimiento/');
+                  },
+                ),
+                ListTile(
+                  title: Text('Reporte de Abastecimientos'),
+                  onTap: () {
+                    Modular.to.pushNamed('/abastecimiento/reporte_abastecimiento');
+                  },
+                ),
               ],
             ),
           ],
         ),
       ),
       body: _builBody(),
-      bottomNavigationBar: BottomNavigationBar(
-        items: [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: "Inicio"),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: "Configuracion",
-          ),
-        ],
-        backgroundColor: const Color.fromARGB(255, 255, 255, 255),
-      ),
     );
   }
 
@@ -132,7 +217,9 @@ class HomePage extends StatelessWidget {
                         iconColor: const Color.fromARGB(255, 68, 108, 219),
                         label: 'Buscar Puntos Recarga',
                         icon: Icons.water_drop,
-                        onPressed: () {},
+                        onPressed: () {
+                          Modular.to.pushNamed('/recarga/');
+                        },
                       ),
                     ],
                   ),
@@ -144,9 +231,13 @@ class HomePage extends StatelessWidget {
                     children: [
                       CustomButtomWidget(
                         iconColor: const Color.fromARGB(255, 255, 1, 1),
-                        label: 'Tácticas Combate',
-                        icon: Icons.fire_extinguisher,
-                        onPressed: () {},
+                        label: 'Registrar Abastecimiento',
+                        icon: Icons.local_gas_station,
+                        onPressed: () {
+                          Modular.to.pushNamed(
+                            '/abastecimiento/abm_abastecimiento',
+                          );
+                        },
                       ),
 
                       CustomButtomWidget(

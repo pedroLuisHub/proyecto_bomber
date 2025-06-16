@@ -57,6 +57,38 @@ mixin _$CiudadanoController on CiudadanoControllerBase, Store {
     });
   }
 
+  late final _$pdfBase64Atom =
+      Atom(name: 'CiudadanoControllerBase.pdfBase64', context: context);
+
+  @override
+  String? get pdfBase64 {
+    _$pdfBase64Atom.reportRead();
+    return super.pdfBase64;
+  }
+
+  @override
+  set pdfBase64(String? value) {
+    _$pdfBase64Atom.reportWrite(value, super.pdfBase64, () {
+      super.pdfBase64 = value;
+    });
+  }
+
+  late final _$pdfBytesAtom =
+      Atom(name: 'CiudadanoControllerBase.pdfBytes', context: context);
+
+  @override
+  Uint8List? get pdfBytes {
+    _$pdfBytesAtom.reportRead();
+    return super.pdfBytes;
+  }
+
+  @override
+  set pdfBytes(Uint8List? value) {
+    _$pdfBytesAtom.reportWrite(value, super.pdfBytes, () {
+      super.pdfBytes = value;
+    });
+  }
+
   late final _$_statusAtom =
       Atom(name: 'CiudadanoControllerBase._status', context: context);
 
@@ -82,6 +114,16 @@ mixin _$CiudadanoController on CiudadanoControllerBase, Store {
   Future<void> listaCiudadano(String condition) {
     return _$listaCiudadanoAsyncAction
         .run(() => super.listaCiudadano(condition));
+  }
+
+  late final _$reporteCiudadanosAsyncAction = AsyncAction(
+      'CiudadanoControllerBase.reporteCiudadanos',
+      context: context);
+
+  @override
+  Future<void> reporteCiudadanos(String desde, String hasta) {
+    return _$reporteCiudadanosAsyncAction
+        .run(() => super.reporteCiudadanos(desde, hasta));
   }
 
   late final _$CiudadanoControllerBaseActionController =
@@ -125,7 +167,9 @@ mixin _$CiudadanoController on CiudadanoControllerBase, Store {
     return '''
 message: ${message},
 lista: ${lista},
-currentRecord: ${currentRecord}
+currentRecord: ${currentRecord},
+pdfBase64: ${pdfBase64},
+pdfBytes: ${pdfBytes}
     ''';
   }
 }
