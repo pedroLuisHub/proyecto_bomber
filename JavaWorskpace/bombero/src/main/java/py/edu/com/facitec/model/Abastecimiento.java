@@ -1,6 +1,6 @@
 package py.edu.com.facitec.model;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -26,17 +26,15 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class Abastecimiento {
-
+  
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id_abastecimiento;
-	@JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "dd-MM-yyyy")
 	@Column(nullable = false)
-	private LocalDate fecha_inicio;
-	@JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "dd-MM-yyyy")
+	private LocalDateTime fecha_inicio;
 	@Column(nullable = false)
-	private LocalDate fecha_finalizacion;
+	private LocalDateTime fecha_finalizacion;
 	@Column(nullable = false)
 	private double cant_litros;
 	@Column(nullable = false)

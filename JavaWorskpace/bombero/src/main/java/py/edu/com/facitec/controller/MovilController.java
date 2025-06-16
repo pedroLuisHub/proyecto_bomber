@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.AllArgsConstructor;
@@ -15,6 +16,7 @@ import py.edu.com.facitec.model.Bombero;
 import py.edu.com.facitec.model.Movil;
 import py.edu.com.facitec.service.MovilService;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 
 
@@ -28,8 +30,8 @@ public class MovilController {
 	
 	
 	@GetMapping("/lista")
-	public ResponseEntity<List<Movil>> listarMoviles() {
-		List<Movil> list = movilService.listarMoviles();
+	public ResponseEntity<List<Movil>> listarMoviles(@RequestParam String condition) {
+		List<Movil> list = movilService.listarMoviles(condition);
 		return ResponseEntity.ok(list);
 	}
 
@@ -54,6 +56,11 @@ public class MovilController {
 	@DeleteMapping("/eliminar/{id_movil}")
 	public void eliminarMovil(@PathVariable Integer id_movil) {
 	    movilService.eliminarMovil(id_movil);
+	}
+	
+	@GetMapping("/reporte")
+	public ResponseEntity<?> findReporteMovil(String desde, String hasta) {
+		return movilService.reporteMovil("", desde, hasta);
 	}
 		
 }

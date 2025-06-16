@@ -68,5 +68,9 @@ public class DepositoAguaController {
 	    return ResponseEntity.ok(depositoActualizado);
 	}
 	
+	@GetMapping("/reporte")
+	public ResponseEntity<?> reporteDeposito(Double numMin, Double numMax) {
+		return depositoAguaService.reporteDeposito("", numMin, numMax);
+	}
 	
 }

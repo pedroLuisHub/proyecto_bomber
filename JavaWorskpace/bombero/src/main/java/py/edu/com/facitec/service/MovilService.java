@@ -3,6 +3,7 @@ package py.edu.com.facitec.service;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import lombok.AllArgsConstructor;
@@ -14,10 +15,11 @@ import py.edu.com.facitec.repository.MovilRepository;
 public class MovilService {
 
 	private MovilRepository movilRepository;
+	private GenerarReporte generarReporte;
 	
 	
-	public List<Movil> listarMoviles(){
-		return movilRepository.findAll();
+	public List<Movil> listarMoviles(String condition){
+		return movilRepository.findByDescripcionContaining(condition);
 	}
 	
 	
@@ -35,5 +37,11 @@ public class MovilService {
 		movilRepository.deleteById(id);
 	}
 	
+	public ResponseEntity<?> reporteMovil(String timeOffSet, String filtroDesde, String filtroHasta) {
+		
+	List<Movil> moviles = movilRepository.findByNombreRango(filtroDesde, filtroHasta);
 	
+	//String filtro = "Desde " + filtroDesde + " hasta " + filtroHasta;
+	return generarReporte.crearReporte(timeOffSet, "", "ListadoMoviles", moviles);
+ }
 }

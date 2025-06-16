@@ -45,22 +45,8 @@ public class AbastecimientoController {
 	@PutMapping("/actualizar/{id_abastecimiento}")
 	public ResponseEntity<Abastecimiento> actualizarAbastecimiento(@PathVariable Integer id_abastecimiento,
 			@RequestBody Abastecimiento abastecimientoActualizado) {
-		return abastecimientoService.buscarPorId(id_abastecimiento).map(abastecimientoExistente -> {
-			abastecimientoExistente.setCant_litros(abastecimientoActualizado.getCant_litros());
-			abastecimientoExistente.setCant_viajes(abastecimientoActualizado.getCant_viajes());
-			abastecimientoExistente.setDescripcion(abastecimientoActualizado.getDescripcion());
-			abastecimientoExistente.setFecha_finalizacion(abastecimientoActualizado.getFecha_finalizacion());
-			abastecimientoExistente.setFecha_finalizacion(abastecimientoActualizado.getFecha_inicio());
-			abastecimientoExistente.setBombero(abastecimientoActualizado.getBombero());
-			abastecimientoExistente.setDepositoAgua(abastecimientoActualizado.getDepositoAgua());
-			abastecimientoExistente.setMovil(abastecimientoActualizado.getMovil());
-			
-			Abastecimiento actualizada = abastecimientoService.guardarAbastecimiento(abastecimientoExistente);
-			return ResponseEntity.ok(actualizada);
-		}).orElse(ResponseEntity.notFound().build());
-		
 
-		
+		return ResponseEntity.ok(abastecimientoService.actualizarAbastecimiento(abastecimientoActualizado, id_abastecimiento));
 	}
 
 	@DeleteMapping("/eliminar/{id}")
@@ -73,4 +59,10 @@ public class AbastecimientoController {
 	public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException ex) {
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
 	}
+	
+	@GetMapping("/reporte")
+	public ResponseEntity<?> findReporteAbastecimiento(String fechaInicioString, String fechaFinalString) {
+		return abastecimientoService.reporteAbastecimiento("", fechaInicioString, fechaFinalString);
+	}
+
 }

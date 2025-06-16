@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import py.edu.com.facitec.model.Bombero;
@@ -15,18 +14,14 @@ import py.edu.com.facitec.model.Movil;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class AbastecimientoDTO {
+public class RecargaDTO {
 
-    private int id_abastecimiento;
+	private int idRecarga;
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
-    private LocalDateTime fechaInicio;
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
-    private LocalDateTime fechaFinalizacion;
-    private double cant_litros;
-    private String descripcion;
-    private int cant_viajes;
-    private DepositoAgua depositoAgua;
-    private Movil movil;
-    private Bombero bombero;
+	private LocalDateTime fecha_hora;
+	private String descripcion;
+	private double cantidad_litros;
+	private Movil movil;
+	private Bombero bombero;
+	private DepositoAgua depositoAgua;
 }

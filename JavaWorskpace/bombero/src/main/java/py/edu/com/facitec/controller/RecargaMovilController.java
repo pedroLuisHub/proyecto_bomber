@@ -1,5 +1,7 @@
 package py.edu.com.facitec.controller;
 
+//package py.edu.com.facitec.controller;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -14,29 +16,32 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import lombok.AllArgsConstructor;
+import py.edu.com.facitec.dto.DepositoAguaDTO;
+import py.edu.com.facitec.dto.RecargaDTO;
 import py.edu.com.facitec.model.RecargaMovil;
+import py.edu.com.facitec.service.DepositoAguaService;
 import py.edu.com.facitec.service.RecargaMovilService;
 
 @RestController
 @RequestMapping("/recargas")
+@AllArgsConstructor
 public class RecargaMovilController {
 
 	private final RecargaMovilService recargaMovilService;
 
-	public RecargaMovilController(RecargaMovilService recargaMovilService) {
-		this.recargaMovilService = recargaMovilService;
-	}
+//	public RecargaMovilController(RecargaMovilService recargaMovilService) {
+//		this.recargaMovilService = recargaMovilService;
+//	}
 
 	@GetMapping("/listar")
-	public ResponseEntity<List<RecargaMovil>> listarRecargas() {
-		List<RecargaMovil> recargas = recargaMovilService.listarRecargas();
-		return ResponseEntity.ok(recargas);
-	}
+    public ResponseEntity<List<RecargaDTO>> listarRecargas() {
+        return ResponseEntity.ok(recargaMovilService.listarRecargas());
+    }
 
 	@PostMapping("/insertar")
 	public ResponseEntity<RecargaMovil> crearRecargaMovil(@RequestBody RecargaMovil recargaMovil) {
-		RecargaMovil nueva = recargaMovilService.guardarRecargaMovil(recargaMovil);
-		return ResponseEntity.ok(nueva);
+		return ResponseEntity.ok(recargaMovilService.guardarRecargaMovil(recargaMovil));
 	}
 
 	@PutMapping("/actualizar/{id_recarga_movil}")
@@ -61,6 +66,11 @@ public class RecargaMovilController {
 	@DeleteMapping("/eliminar/{id_recarga_movil}")
 	public void eliminarRecargaMovil(@PathVariable Integer id_recarga_movil) {
 		recargaMovilService.eliminarRecargaMovil(id_recarga_movil);
+	}
+	
+	@GetMapping("/reporte")
+	public ResponseEntity<?> findReporteBombero(String fechaInicioString, String fechaFinalString) {
+		return recargaMovilService.reporteRecarga("", fechaInicioString, fechaFinalString);
 	}
 
 }

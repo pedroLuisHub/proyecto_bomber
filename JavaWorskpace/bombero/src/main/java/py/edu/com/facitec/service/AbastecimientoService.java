@@ -1,9 +1,12 @@
 package py.edu.com.facitec.service;
 
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import lombok.AllArgsConstructor;
@@ -26,6 +29,7 @@ public class AbastecimientoService {
     private final DepositoAguaRepository depositoAguaRepository;
     private final BomberoRepository bomberoRepository;
     private final MovilRepository movilRepository;
+	private GenerarReporte generarReporte;
     
     
     
@@ -38,6 +42,13 @@ public class AbastecimientoService {
         return abastecimientoRepository.findById(id);
     }
     
+	public Abastecimiento actualizarAbastecimiento(Abastecimiento abastecimiento, Integer id_abastecimiento) {
+		
+		Abastecimiento actualizada = this.guardarAbastecimiento(abastecimiento);
+		
+		return actualizada;
+			
+	}
     
     
     // Guardar un abastecimiento
@@ -66,4 +77,21 @@ public class AbastecimientoService {
         }
         abastecimientoRepository.deleteById(id);
     }
+    
+	public ResponseEntity<?> reporteAbastecimiento(String timeOffSet, String fechaInicioString, String fechaFinalString) {
+
+		  // Parsear como LocalDate primero
+      LocalDate fechaInicioDate = LocalDate.parse(fechaInicioString);
+      LocalDate fechaFinDate = LocalDate.parse(fechaFinalString);
+      
+      // Convertir a LocalDateTime
+      LocalDateTime fechaInicio = fechaInicioDate.atStartOfDay();
+      LocalDateTime fechaFin = fechaFinDate.atTime(23, 59, 59);
+
+		List<Abastecimiento> abastecimientos = abastecimientoRepository.findByFechaBetween(fechaInicio, fechaFin);
+
+		// String filtro = "Desde " + filtroDesde + " hasta " + filtroHasta;
+		return generarReporte.crearReporte(timeOffSet, "", "ListadoAbastecimientos", abastecimientos);
+	}
+    
 }

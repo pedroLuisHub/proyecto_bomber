@@ -31,21 +31,13 @@ public class RecargaMovil {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id_recarga_movil;
-	@JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "yyyy-MM-dd'T'HH:mm:ss")
 	@Column(nullable = false)
 	private LocalDateTime fecha_hora;
 	@Column(length = 45, nullable = false)
 	private String descripcion;
 	@Column(nullable = false)
 	private double cantidad_litros;
-	/*@Column(nullable = false)
-	private int id_movil;
-	@Column(nullable = false)
-	private int id_bombero;
-	@Column(nullable = false)
-	private int id_deposito_agua;*/
-	
-	
+	  
 	@ManyToOne
 	@JoinColumn(name = "id_deposito_agua",nullable = false)
 	private DepositoAgua depositoAgua;

@@ -23,7 +23,7 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "deposito_agua")
-@Data
+@Data 
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
 @AllArgsConstructor
@@ -45,7 +45,7 @@ public class DepositoAgua {
 	
 	
 	@ManyToOne
-	@JoinColumn(nullable = false)
+	@JoinColumn(name = "id_ciudadano", nullable = false)
 	private Ciudadano ciudadano;
 	
 	
@@ -59,9 +59,9 @@ public class DepositoAgua {
 	private List <Abastecimiento> abastecimiento;
 	
 	
-	@Transient
-	@JsonProperty("id_ciudadano")
-	private Integer ciudadanoId;
+//	@Transient
+//	@JsonProperty("id_ciudadano")
+//	private int ciudadanoId;
 	
 	
 //	//getters y setters

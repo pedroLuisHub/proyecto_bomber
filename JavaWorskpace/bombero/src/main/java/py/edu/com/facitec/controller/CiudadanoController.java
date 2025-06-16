@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.AllArgsConstructor;
@@ -23,44 +24,43 @@ import py.edu.com.facitec.service.CiudadanoService;
 public class CiudadanoController {
 
 	private final CiudadanoService ciudadanoService;
-	
-	
+
 	@GetMapping("/lista")
-	public ResponseEntity<List<Ciudadano>> listarCiudadanos() {
-		List<Ciudadano> list = ciudadanoService.listarCiudadanos();
+	public ResponseEntity<List<Ciudadano>> listarCiudadanos(@RequestParam String condition) {
+		List<Ciudadano> list = ciudadanoService.listarCiudadanos(condition);
 		return ResponseEntity.ok(list);
 	}
 
-	
-	
 	@GetMapping("/{id_ciudadano}")
 	public ResponseEntity<Ciudadano> buscarPorId(@PathVariable Integer id_ciudadano) {
-	    Optional<Ciudadano> ciudadanoOpt = ciudadanoService.buscarPorId(id_ciudadano);
-	    if (ciudadanoOpt.isPresent()) {
-	        return ResponseEntity.ok(ciudadanoOpt.get());
-	    }
-	    return ResponseEntity.notFound().build();
+		Optional<Ciudadano> ciudadanoOpt = ciudadanoService.buscarPorId(id_ciudadano);
+		if (ciudadanoOpt.isPresent()) {
+			return ResponseEntity.ok(ciudadanoOpt.get());
+		}
+		return ResponseEntity.notFound().build();
 	}
-	
-	
+
 	@PostMapping("/insertar")
 	public ResponseEntity<Ciudadano> crearCiudadano(@RequestBody Ciudadano ciudadano) {
 		return ResponseEntity.ok(ciudadanoService.guardarCiudadano(ciudadano));
 	}
-	
+
 	@DeleteMapping("/eliminar/{id_ciudadano}")
 	public void eliminarCiudadano(@PathVariable Integer id_ciudadano) {
-	    ciudadanoService.eliminarCiudadano(id_ciudadano);
+		ciudadanoService.eliminarCiudadano(id_ciudadano);
+	}
+
+	@PutMapping("/actualizar/{id_ciudadano}")
+	public ResponseEntity<Ciudadano> actualizarCiudadano(@PathVariable Integer id_ciudadano,
+			@RequestBody Ciudadano ciudadano) {
+		// Establecer el ID del ciudadano recibido en el cuerpo al ID de la URL
+		ciudadano.setId_ciudadano(id_ciudadano);
+		Ciudadano ciudadanoActualizado = ciudadanoService.guardarCiudadano(ciudadano);
+		return ResponseEntity.ok(ciudadanoActualizado);
 	}
 	
-	
-	@PutMapping("/actualizar/{id_ciudadano}")
-	public ResponseEntity<Ciudadano> actualizarCiudadano(
-	        @PathVariable Integer id_ciudadano,
-	        @RequestBody Ciudadano ciudadano) {
-	    // Establecer el ID del ciudadano recibido en el cuerpo al ID de la URL
-	    ciudadano.setId_ciudadano(id_ciudadano);
-	    Ciudadano ciudadanoActualizado = ciudadanoService.guardarCiudadano(ciudadano);
-	    return ResponseEntity.ok(ciudadanoActualizado);
+	@GetMapping("/reporte")
+	public ResponseEntity<?> findReporteBombero(String desde, String hasta) {
+		return ciudadanoService.reporteCiudadano("", desde, hasta);
 	}
 }
